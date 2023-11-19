@@ -19,6 +19,9 @@ import warnings
 import random
 from ocr import  ocr_space_file
 import string
+os.environ["EMAIL"]  = "kenliz1738@gmail.com"
+os.environ["PASS"] = "Wambugu71?"
+os.environ["HUGGINGFACEHUB_API_TOKEN"] = "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"
 warnings.filterwarnings("ignore")
 from streamlit_login_auth_ui.widgets import __login__
 
@@ -36,11 +39,33 @@ st.write("AiMazing")
 with st.sidebar:
     option = st.selectbox('Choose your preferred model:',('Llama-2-70b-chat-hf', 'CodeLlama-34b-Instruct-hf', 'falcon-180B-chat', 'Mistral-7B-Instruct-v0.1'),on_change=clear) 
     chat_option = st.radio(
-    "What do you want  to explore.",
+    "What's your favorite movie genre",
     ["Chat", "Chat with your  docs", "Chat with your printed  text"],
     captions = ["Normal chat", "Chat with your  .pdf files.", "chat with your printed screenshots  (jpg/jpeg)"])
-#def  pdfllm():
- #   llm = 
+#@st.cache_data
+def  read_pdf():
+    with st.spinner("Extracting  the  pdf info..."):
+        document  = PyPDFLoader("mypdf.pdf")
+        pages  = document.load()
+        repo_id = "sentence-transformers/all-mpnet-base-v2"
+        embeddings = HuggingFaceHubEmbeddings(
+        repo_id=repo_id,
+        task="feature-extraction"
+    )
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0, length_function = len,)
+        texts = text_splitter.split_documents(pages)#text_splitter.create_documents(text) 
+        db  = FAISS.from_documents(texts, embeddings)
+    return db
+    
+@st.cache_data
+def  photos_llm():
+    llm =   AiAmaizing_llm(email= os.environ["EMAIL"],psw = os.environ["PASS"])
+    return llm
+
+@st.cache_data
+def  pdf_llm():
+    llm =   AiAmaizing_llm(email= os.environ["EMAIL"],psw = os.environ["PASS"])
+    return llm
 if LOGGED_IN == True:
     if  chat_option == "Chat":
             #from metallma2wambugu.huglogin import login
@@ -173,16 +198,12 @@ if LOGGED_IN == True:
         with st.sidebar:
             uploaded_file = st.file_uploader('Choose your .pdf file', type="pdf")
             if uploaded_file is not None:
-                text = read_pdf().read(uploaded_file)
-                repo_id = "sentence-transformers/all-mpnet-base-v2"
-                embeddings = HuggingFaceHubEmbeddings(
-                repo_id=repo_id,
-                task="feature-extraction"
-            )
-                text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0, length_function = len,)
-                texts = text_splitter.create_documents(text) 
-                db  = FAISS.from_documents(texts, embeddings)
+                with open("mypdf.pdf", "wb") as  pdf:
+                    pdf.write(uploaded_file.read())
                 
+
+                    
+
                 
         if "messages" not in st.session_state:
             st.session_state.messages = []
@@ -205,8 +226,8 @@ if LOGGED_IN == True:
                 with st.spinner("Generating response..."):
                     message_placeholder = st.empty()
                     full_response = ""
-                    llm  =  AiAmaizing_llm(email= os.environ["EMAIL"],psw = os.environ["PASS"])
-                    retriever = db.as_retriever()
+                    llm  =  pdf_llm()#AiAmaizing_llm(email= os.environ["EMAIL"],psw = os.environ["PASS"])
+                    retriever = read_pdf().as_retriever()
                     qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever)
                     res = qa({"query": f"{prompt}"})#ask your question from your pdf
                     assistant_response = res["result"]
@@ -224,7 +245,7 @@ if LOGGED_IN == True:
                 st.session_state.messages.append({"role": "assistant", "content": assistant_response})
                # st.session_state.messages.append()
             
-    if  chat_option  == "Chat with your printed  text":
+    if  chat_option  == "Chat with your  data":
         with st.sidebar:
             uploaded = st.file_uploader('Choose your .jpg file')
             if uploaded is not None:
@@ -263,7 +284,7 @@ if LOGGED_IN == True:
                 with st.spinner("Generating response..."):
                     message_placeholder = st.empty()
                     full_response = ""
-                    llm  =  AiAmaizing_llm(email= os.environ["EMAIL"],psw = os.environ["PASS"])
+                    llm  = photos_llm()
                     retriever = data_base.as_retriever()
                     qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever)
                     res_ = qa({"query": f"{prompt}"})#ask your question from your pdf
