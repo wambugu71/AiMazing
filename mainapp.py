@@ -245,7 +245,7 @@ if LOGGED_IN == True:
                 st.session_state.messages.append({"role": "assistant", "content": assistant_response})
                # st.session_state.messages.append()
             
-    if  chat_option  == "Chat with your  data":
+    if  chat_option  == "Chat with your printed  text":
         with st.sidebar:
             uploaded = st.file_uploader('Choose your .jpg file')
             if uploaded is not None:
