@@ -36,7 +36,7 @@ st.write("AiMazing")
 with st.sidebar:
     option = st.selectbox('Choose your preferred model:',('Llama-2-70b-chat-hf', 'CodeLlama-34b-Instruct-hf', 'falcon-180B-chat', 'Mistral-7B-Instruct-v0.1'),on_change=clear) 
     chat_option = st.radio(
-    "What's your favorite movie genre",
+    "What do you want  to explore.",
     ["Chat", "Chat with your  docs", "Chat with your printed  text"],
     captions = ["Normal chat", "Chat with your  .pdf files.", "chat with your printed screenshots  (jpg/jpeg)"])
 #def  pdfllm():
@@ -224,7 +224,7 @@ if LOGGED_IN == True:
                 st.session_state.messages.append({"role": "assistant", "content": assistant_response})
                # st.session_state.messages.append()
             
-    if  chat_option  == "Chat with your  data":
+    if  chat_option  == ""Chat with your printed  text":
         with st.sidebar:
             uploaded = st.file_uploader('Choose your .jpg file')
             if uploaded is not None:
