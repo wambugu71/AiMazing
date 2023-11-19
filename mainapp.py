@@ -2,7 +2,7 @@ import streamlit as st
 import  warnings 
 import  os  
 from AiMazingLLM import  AiAmaizing_llm
-from load_pdf import  preprocess_pdf
+#from load_pdf import  preprocess_pdf
 from langchain.document_loaders  import  PyPDFLoader
 from pdf_reader import  read_pdf
 from langchain.embeddings import HuggingFaceHubEmbeddings
