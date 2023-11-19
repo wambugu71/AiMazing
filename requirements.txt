@@ -10,5 +10,5 @@ pysqlite3-binary
 faiss-cpu 
 pypdf
 streamlit_login_auth_ui
-argon2
+argon2-cffi
 
