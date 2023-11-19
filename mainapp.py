@@ -66,6 +66,19 @@ def  photos_llm():
 def  pdf_llm():
     llm =   AiAmaizing_llm(email= os.environ["EMAIL"],psw = os.environ["PASS"])
     return llm
+def  ocr_processing():
+  with st.spinner("Extracting  the  text..."):
+    res = ocr_space_file(filename = "ken.jpg").json()['ParsedResults'][0]['ParsedText']
+    repo_id = "sentence-transformers/all-mpnet-base-v2"
+    embeddings = HuggingFaceHubEmbeddings(
+    repo_id=repo_id,
+    task="feature-extraction"
+    )
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0, length_function = len,)
+    texts_ = text_splitter.create_documents([res]) 
+    data_base = FAISS.from_documents(texts_, embeddings)
+    return data_base
+
 if LOGGED_IN == True:
     if  chat_option == "Chat":
             #from metallma2wambugu.huglogin import login
@@ -251,18 +264,8 @@ if LOGGED_IN == True:
             if uploaded is not None:
                 with open("ken.jpg", "wb") as f:
                     f.write(uploaded.read())
-                with st.spinner("Extracting  the  text..."):
-                    res = ocr_space_file(filename = "ken.jpg").json()['ParsedResults'][0]['ParsedText']
-
-                    repo_id = "sentence-transformers/all-mpnet-base-v2"
-                    embeddings = HuggingFaceHubEmbeddings(
-                    repo_id=repo_id,
-                    task="feature-extraction"
-                    )
-                    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0, length_function = len,)
-                    texts_ = text_splitter.create_documents([res]) 
-                    data_base = FAISS.from_documents(texts_, embeddings)
-
+            
+                   
         if "messages" not in st.session_state:
             st.session_state.messages = []
 
@@ -285,7 +288,7 @@ if LOGGED_IN == True:
                     message_placeholder = st.empty()
                     full_response = ""
                     llm  = photos_llm()
-                    retriever = data_base.as_retriever()
+                    retriever = ocr_processing().as_retriever()
                     qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever)
                     res_ = qa({"query": f"{prompt}"})#ask your question from your pdf
                     assistant_response = res_["result"]
