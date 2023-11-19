@@ -116,8 +116,8 @@ if LOGGED_IN == True:
         with st.sidebar:
             st.markdown("Access real time response:")
             websearch = st.checkbox("Web search")
-            st.markdown("__Developer:__ Wambugu kinyua")
-            st.markdown("__Email:__ kenliz1738@gmail.com")
+            st.markdown("__Developer:__ AiMazing Team")
+            st.markdown("__Email:__ nextgpt@gmail.com")
             st.markdown("__Note:__ The app is still in development it might break")
         #option_label=False
         #on = st.toggle("Enable model switching:")
