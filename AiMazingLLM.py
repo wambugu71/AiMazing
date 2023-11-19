@@ -16,7 +16,7 @@ class AiAmaizing_llm(LLM):
     email : Optional[str] = None
     psw : Optional[str] = None
     web_search: Optional[bool]= False
-    temperature: Optional[float] = 0.2
+    temperature: Optional[float] = 0.5
     top_p: Optional[float] = 0.65
     repetition_penalty: Optional[float] = 1.2
     top_k: Optional[int]= 50
