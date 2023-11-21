@@ -1,3 +1,5 @@
+# Author of the file wambugu kinyua
+# Keep credits.
 import streamlit as st
 import  warnings 
 import  os  
