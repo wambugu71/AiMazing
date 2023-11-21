@@ -57,12 +57,12 @@ def  read_pdf():
         db  = FAISS.from_documents(texts, embeddings)
     return db
     
-@st.cache_data
+#@st.cache_data
 def  photos_llm():
     llm =   AiAmaizing_llm(email= os.environ["EMAIL"],psw = os.environ["PASS"])
     return llm
 
-@st.cache_data
+#@st.cache_data
 def  pdf_llm():
     llm =   AiAmaizing_llm(email= os.environ["EMAIL"],psw = os.environ["PASS"])
     return llm
