@@ -42,7 +42,7 @@ with st.sidebar:
     "What's your favorite movie genre",
     ["Chat", "Chat with your  docs", "Chat with your printed  text"],
     captions = ["Normal chat", "Chat with your  .pdf files.", "chat with your printed screenshots  (jpg/jpeg)"])
-#@st.cache_data
+@st.cache_data
 def  read_pdf():
     with st.spinner("Extracting  the  pdf info..."):
         document  = PyPDFLoader("mypdf.pdf")
@@ -66,6 +66,7 @@ def  photos_llm():
 def  pdf_llm():
     llm =   AiAmaizing_llm(email= os.environ["EMAIL"],psw = os.environ["PASS"])
     return llm
+@st.cache_data
 def  ocr_processing():
   with st.spinner("Extracting  the  text..."):
     res = ocr_space_file(filename = "ken.jpg").json()['ParsedResults'][0]['ParsedText']
